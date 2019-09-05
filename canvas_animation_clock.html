@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>clock</title>
+    <style>
+        body{
+            margin: 0;
+        }
+        canvas{
+            display: block;
+            margin: 20px auto 0;
+            width: 600px;
+            height: 600px;
+            background: #ffeecc;
+        }
+    </style>
+</head>
+<body>
+    <canvas width="600", height="600">你的浏览器不支持显示该区域内容,请升级你的浏览器器</canvas>
+    <script>
+        clock();
+        function clock(){         
+            let canvas = document.querySelector("canvas");
+            if(!canvas.getContext) return ;
+            let canCon = canvas.getContext("2d");
+            
+            canCon.clearRect(0, 0, 600, 600);
+            drawDial(canCon);
+            drawAllHands(canCon);
+            requestAnimationFrame(clock);
+        }
+        function drawDial(canCon){
+            canCon.save();
+
+            //绘制钟表中心
+            canCon.translate(300, 300);
+            canCon.fillStyle="red";
+            canCon.beginPath();
+            canCon.arc(0, 0, 10, 0, Math.PI * 2 );
+            canCon.fill();
+            
+            //绘制表盘轮廓
+            canCon.strokeStyle="black";
+            canCon.lineWidth="3";
+            canCon.beginPath();
+            canCon.arc(0, 0, 260, 0, Math.PI*2);
+            canCon.stroke();
+
+            //绘制表盘刻度
+            for(let i =0; i< 60; i++){
+                canCon.save();
+                canCon.rotate(-Math.PI/2+ i * Math.PI/30);
+                canCon.beginPath();
+                canCon.moveTo(i%5?240:235, 0);
+                canCon.lineTo(260,0);
+                canCon.lineWidth=i%5? 1: 5;
+                canCon.strokeStyle =i%5?"green":"red";
+                canCon.closePath();
+                canCon.stroke();
+                canCon.restore();
+
+            }
+            canCon.restore();
+        }
+        function drawAllHands(canCon){
+            let time = new Date();
+            let hours = time.getHours(),
+                minutes = time.getMinutes(),
+                seconds = time.getSeconds();
+            let S_deg=Math.PI*2/60*seconds, //秒
+                M_deg=Math.PI*2/60*( minutes+seconds/60), //分
+                H_deg=Math.PI*2/12*(hours+minutes/60+seconds/3600); //时
+            
+            drawHand(S_deg, 220, 3, "yellow", canCon);
+            drawHand(M_deg, 200, 6, "green", canCon);
+            drawHand(H_deg, 150, 9, "red", canCon);
+            //绘制指针
+            function drawHand(angle, len, width, color, canCon){
+                canCon.save();
+                canCon.translate(300, 300);
+                canCon.strokeStyle = color;
+                canCon.globalCompositeOperation="destination-over"
+                canCon.lineWidth=width;
+                canCon.beginPath();
+                canCon.rotate(angle-Math.PI/2);
+                canCon.moveTo(-20, 0);
+                canCon.lineTo(len,0);
+                canCon.stroke();
+                canCon.restore();
+            }
+        }
+    </script>
+</body>
+</html>
