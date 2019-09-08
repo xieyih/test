@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>DEMO</title>
+    <style>
+        body{
+            margin: 0;
+        }
+        canvas{
+            display: block;
+            margin: 20px auto 0;
+            width: 600px;
+            height: 600px;
+            background: red;
+        }
+    </style>
+</head>
+<body>
+    <canvas width="600", height="600">你的浏览器不支持显示该区域内容,请升级你的浏览器器</canvas>
+    <script>
+        let canvas = document.querySelector("canvas");
+            // if(!canvas.getContext) return ;
+        let canCon = canvas.getContext("2d");
+        // createColorBoardCir(10,10);    
+        // function createColorBoardCir(row, col){
+        //     for (let i=0; i<row; i++){
+        //         for(let j=0; j<col; j++){
+        //             canCon.fillStyle='rgb('+Math.floor(255-(255/row)*i)+','+Math.floor(255-(255/col)*j)+',0)';
+        //             canCon.beginPath();
+        //             canCon.fillRect(j*25, i*25, 25, 25);
+
+        //         }
+        //     }
+        // }
+        // canCon.globalAlpha=0.6;
+        // 我的想法是，写一个函数，然后传入以下参数
+        //     多角星中心x
+        //     多角星中心y
+        //     多角星半径r
+        //     几角星n
+        //     color
+        // canCon.fillRect(30,30,30,30);
+            draw(80, 80, 20, 50, 5, "yellow",canCon);
+            /*
+                绘制多角星 V1.0
+                x, y,  中心坐标
+                r_min, r_max 内、外接圆半径，
+                n 多角星角的数量
+                color1 多角星的颜色
+                canCon 绘画笔
+            */
+            function draw(x, y, r_min,r_max, n, color,canCon){
+                canCon.save();
+                canCon.strokeStyle="white";
+                canCon.translate(x, y);
+                canCon.fillStyle=color;
+                canCon.rotate(-Math.PI/2);
+                for(let i=0; i<(2*n); i++){
+                    canCon.save();
+                    canCon.rotate((Math.PI*2)/(2*n)*i);
+                    canCon.lineTo(i%2?r_min:r_max, 0);
+                    canCon.restore();
+                }
+                canCon.closePath();
+                // canCon.fill();
+                canCon.stroke();
+                canCon.restore();
+            }
+
+        
+    </script>
+</body>
+</html>
